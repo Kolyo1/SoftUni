@@ -9,7 +9,7 @@ if seconds < 10:
     print(f"{minutes}:0{seconds}")
 else:
     print(f"{minutes}:{seconds}")
-
+ 
 # # #Zad 2 Bonus Score
 number = int(input())
 bonus_score = 0
