@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load vinyl_filters %}
+
+{% block title %}My Vinyl Collection{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <!-- Filter Sidebar -->
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Filter Collection</h5>
+            </div>
+            <div class="card-body">
+                <form method="get">
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% if field.errors %}
+                        <div class="text-danger">
+                            {{ field.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                    <a href="{% url 'album_list' %}" class="btn btn-outline-secondary w-100 mt-2">Clear Filters</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <!-- Results Header -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>My Collection <span class="badge bg-secondary">{{ total_albums }}</span></h2>
+            <a href="#" class="btn btn-success">
+                + Add New Album
+            </a>
+        </div>
+        
+        <!-- Album Grid -->
+        {% if albums %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for album in albums %}
+            <div class="col">
+                <div class="card h-100 album-card">
+                    {% if album.is_classic %}
+                    <div class="card-header bg-warning text-dark">
+                        ★ Classic Album (30+ years)
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ album.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <a href="#" class="text-decoration-none">
+                                {{ album.artist.name }}
+                            </a>
+                        </h6>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                Released: {{ album.release_year }}<br>
+                                Condition: {{ album.condition|condition_badge|safe }}<br>
+                                Speed: {{ album.get_speed_display }}
+                            </small>
+                        </p>
+                        <div class="mb-2">
+                            {% for genre in album.genre.all %}
+                            <span class="badge bg-info text-dark">{{ genre.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No albums found!</h4>
+            <p>Start building your collection by adding your first vinyl record.</p>
+            <hr>
+            <a href="#" class="btn btn-primary">Add Your First Album</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
