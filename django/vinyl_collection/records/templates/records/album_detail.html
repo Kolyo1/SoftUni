@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% load vinyl_filters %}
+
+{% block title %}{{ album.title }} - {{ album.artist.name }} - Vinyl Collection{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Album Details -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-0">{{ album.title }}</h3>
+                    <small class="text-white-50">by {{ album.artist.name }}</small>
+                </div>
+                {% if album.is_classic %}
+                <span class="badge bg-warning text-dark">★ Classic Album</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Album Info -->
+                    <div class="col-md-6">
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Artist:</strong></td>
+                                <td>
+                                    <a href="/artists/{{ album.artist.pk }}/" class="text-decoration-none">
+                                        {{ album.artist.name }}
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Release Year:</strong></td>
+                                <td>{{ album.release_year }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Condition:</strong></td>
+                                <td>{{ album.condition|condition_badge|safe }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Speed:</strong></td>
+                                <td>{{ album.get_speed_display }}</td>
+                            </tr>
+                            {% if album.catalog_number %}
+                            <tr>
+                                <td><strong>Catalog #:</strong></td>
+                                <td>{{ album.catalog_number }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                    
+                    <!-- Collection Info -->
+                    <div class="col-md-6">
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Date Added:</strong></td>
+                                <td>{{ album.date_added|date:"M d, Y" }}</td>
+                            </tr>
+                            {% if album.last_played %}
+                            <tr>
+                                <td><strong>Last Played:</strong></td>
+                                <td>{{ album.last_played|date:"M d, Y" }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td><strong>Genres:</strong></td>
+                                <td>
+                                    {% for genre in album.genre.all %}
+                                    <span class="badge bg-info text-dark me-1">{{ genre.name }}</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tracks:</strong></td>
+                                <td>{{ album.tracks.count }} tracks</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Notes -->
+                {% if album.notes %}
+                <div class="mt-4">
+                    <h6 class="text-primary">📝 Personal Notes</h6>
+                    <p class="text-muted">{{ album.notes|linebreaks }}</p>
+                </div>
+                {% endif %}
+                
+                <!-- Action Buttons -->
+                <div class="mt-4 d-flex gap-2">
+                    <a href="{% url 'album_update' album.pk %}" class="btn btn-outline-primary btn-sm">
+                        ✏️ Edit Album
+                    </a>
+                    <a href="{% url 'album_delete' album.pk %}" class="btn btn-outline-danger btn-sm">
+                        🗑️ Delete Album
+                    </a>
+                    <button class="btn btn-outline-success btn-sm" onclick="markAsPlayed()">
+                        ▶️ Mark as Played
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tracks Section -->
+        {% if album.tracks.all %}
+        <div class="card mt-4">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">🎵 Tracklist</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Duration</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for track in album.tracks.all %}
+                            <tr>
+                                <td>{{ track.track_number }}</td>
+                                <td>{{ track.title }}</td>
+                                <td>{{ track.duration|format_duration }}</td>
+                                <td>
+                                    <button class="btn btn-outline-secondary btn-sm">
+                                        🎵 Play
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="col-md-4">
+        <!-- Similar Albums -->
+        {% if similar_albums %}
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">🎼 Similar Albums</h6>
+            </div>
+            <div class="card-body">
+                {% for similar in similar_albums %}
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 {% if not forloop.last %}border-bottom{% endif %}">
+                    <div>
+                        <strong>{{ similar.title }}</strong><br>
+                        <small class="text-muted">{{ similar.artist.name }} ({{ similar.release_year }})</small>
+                    </div>
+                    <a href="{% url 'album_detail' similar.pk %}" class="btn btn-outline-primary btn-sm">
+                        View
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Quick Actions -->
+        <div class="card mt-3">
+            <div class="card-header bg-dark text-white">
+                <h6 class="mb-0">⚡ Quick Actions</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'album_create' %}" class="btn btn-success">
+                        ➕ Add New Album
+                    </a>
+                    <a href="{% url 'album_list' %}" class="btn btn-outline-secondary">
+                        📚 Back to Collection
+                    </a>
+                    <button class="btn btn-outline-info" onclick="addToWishlist()">
+                        ❤️ Add to Wishlist
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="card mt-3">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">📊 Collection Stats</h6>
+            </div>
+            <div class="card-body">
+                <div class="small">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total Albums:</span>
+                        <strong>{% total_albums %}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total Artists:</span>
+                        <strong>{% total_artists %}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Albums by {{ album.artist.name }}:</span>
+                        <strong>{{ album.artist.album_count }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function markAsPlayed() {
+    // Placeholder for marking album as played
+    alert('Mark as played functionality coming soon!');
+}
+
+function addToWishlist() {
+    // Placeholder for adding to wishlist
+    alert('Add to wishlist functionality coming soon!');
+}
+</script>
+{% endblock %}

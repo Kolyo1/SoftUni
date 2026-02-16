@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% load vinyl_filters %}
+
+{% block title %}Artists - Vinyl Collection{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>🎵 Artists</h1>
+            <div class="d-flex gap-2">
+                <a href="{% url 'album_create' %}" class="btn btn-success">
+                    ➕ Add Album
+                </a>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#quickArtistModal">
+                    🎤 Quick Add Artist
+                </button>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Artists</h5>
+                        <h2 class="mb-0">{{ total_artists }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Albums</h5>
+                        <h2 class="mb-0">{{ total_albums }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Avg Albums/Artist</h5>
+                        <h2 class="mb-0">
+                            {% if total_artists > 0 %}
+                                {% widthratio total_albums 1 total_artists %}.0
+                            {% else %}
+                                0
+                            {% endif %}
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Artists Grid -->
+        {% if artists %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for artist in artists %}
+            <div class="col">
+                <div class="card h-100 artist-card">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ artist.name }}</h5>
+                        <span class="badge bg-light text-dark">{{ artist.formation_type }}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <small class="text-muted">Albums:</small>
+                                <strong>{{ artist.album_count }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Type:</small>
+                                <strong>{{ artist.get_formation_type_display }}</strong>
+                            </div>
+                        </div>
+                        {% if artist.country %}
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <small class="text-muted">Country:</small>
+                                <strong>{{ artist.country }}</strong>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if artist.formed_year %}
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <small class="text-muted">Formed:</small>
+                                <strong>{{ artist.formed_year }}</strong>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if artist.biography %}
+                        <p class="card-text small text-muted">{{ artist.biography|truncatewords:20 }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'artist_detail' artist.pk %}" class="btn btn-primary btn-sm">
+                                👁️ View Albums
+                            </a>
+                            <a href="{% url 'album_create' %}" class="btn btn-outline-success btn-sm">
+                                ➕ Add Album
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">
+            <h4 class="alert-heading">No artists found!</h4>
+            <p>Start building your collection by adding your first artist.</p>
+            <hr>
+            <a href="{% url 'album_create' %}" class="btn btn-primary">Add Your First Album</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Quick Add Artist Modal -->
+<div class="modal fade" id="quickArtistModal" tabindex="-1" aria-labelledby="quickArtistModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickArtistModalLabel">🎤 Quick Add Artist</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="quickArtistForm">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="quickArtistName" class="form-label">Artist/Band Name *</label>
+                        <input type="text" class="form-control" id="quickArtistName" name="name" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quickArtistType" class="form-label">Type</label>
+                        <select class="form-control" id="quickArtistType" name="formation_type">
+                            <option value="Solo">Solo Artist</option>
+                            <option value="Band">Band/Group</option>
+                            <option value="Duo">Duo</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quickArtistCountry" class="form-label">Country of Origin</label>
+                        <input type="text" class="form-control" id="quickArtistCountry" name="country" placeholder="e.g., United States">
+                    </div>
+                    <div class="mb-3">
+                        <label for="quickArtistYear" class="form-label">Year Formed</label>
+                        <input type="number" class="form-control" id="quickArtistYear" name="formed_year" min="1900" max="2026" placeholder="e.g., 1960">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Artist</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Quick Artist Creation
+document.getElementById('quickArtistForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creating...';
+    
+    fetch('/artists/create-artist/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Close modal and reset form
+            const modal = bootstrap.Modal.getInstance(document.getElementById('quickArtistModal'));
+            modal.hide();
+            this.reset();
+            
+            // Show success message and reload page to show new artist
+            showAlert(data.message, 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            // Show errors
+            showFormErrors(this, data.errors);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('An error occurred while creating artist.', 'danger');
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    });
+});
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
+function showFormErrors(form, errors) {
+    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    form.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+    
+    for (const [field, errorList] of Object.entries(errors)) {
+        const fieldElement = form.querySelector(`[name="${field}"]`);
+        if (fieldElement) {
+            fieldElement.classList.add('is-invalid');
+            const feedbackElement = fieldElement.parentNode.querySelector('.invalid-feedback');
+            if (feedbackElement) {
+                feedbackElement.textContent = Array.isArray(errorList) ? errorList[0] : errorList;
+            }
+        }
+    }
+}
+</script>
+{% endblock %}

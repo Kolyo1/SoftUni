@@ -12,6 +12,8 @@ class Album(models.Model):
         FAIR = 'Fair', 'Fair'
         POOR = 'Poor', 'Poor'
     
+
+    
     class Speed(models.TextChoices):
         THIRTY_THREE = '33', '33 ⅓ RPM'
         FORTY_FIVE = '45', '45 RPM'

@@ -45,7 +45,7 @@ class Artist(models.Model):
         ordering = ['name']
     
     def __str__(self):
-        return self_name
+        return self.name
     
     @property
     def album_count(self):
