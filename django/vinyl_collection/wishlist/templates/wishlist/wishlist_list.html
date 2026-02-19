@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}My Wishlist{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Header -->
+        <div class="d-flex justify-content-between mb-4">
+            <h2>My Wishlist <span class="priority-badge">{{ total_items }}</span></h2>
+            <a href="{% url 'wishlist_create' %}" class="btn btn-success">
+                + Add to Wishlist
+            </a>
+        </div>
+        
+        <!-- Wishlist Items -->
+        {% if wishlist_items %}
+        <div class="wishlist-grid">
+            {% for item in wishlist_items %}
+            <div class="wishlist-item">
+                {% if item.is_available %}
+                <div class="available-badge">
+                    Available Now!
+                </div>
+                {% endif %}
+                
+                <h5>{{ item.album_title }}</h5>
+                <h6>
+                    {% if item.artist %}
+                        {{ item.artist.name }}
+                    {% else %}
+                        {{ item.temporary_artist }}
+                    {% endif %}
+                </h6>
+                
+                <div class="mb-2">
+                    <span class="priority-badge priority-{{ item.priority|lower }}">
+                        {{ item.get_priority_display }}
+                    </span>
+                </div>
+                
+                {% if item.max_price %}
+                <p class="mb-2">
+                    <small class="text-muted">
+                        Max Price: ${{ item.max_price }}
+                    </small>
+                </p>
+                {% endif %}
+                
+                {% if item.notes %}
+                <p class="mb-2">
+                    <small>{{ item.notes|truncatewords:20 }}</small>
+                </p>
+                {% endif %}
+                
+                <p class="mb-2">
+                    <small class="text-muted">
+                        Added: {{ item.created_date|date:"M d, Y" }}
+                    </small>
+                </p>
+                
+                <div class="btn-group">
+                    {% if item.is_available %}
+                        <a href="{% url 'move_to_collection' item.pk %}" 
+                           class="btn btn-success btn-sm">
+                            Add to Collection
+                        </a>
+                    {% else %}
+                        <a href="{% url 'move_to_collection' item.pk %}" 
+                           class="btn btn-outline-success btn-sm">
+                            Add to Collection
+                        </a>
+                    {% endif %}
+                    
+                    <a href="{% url 'wishlist_delete' item.pk %}" 
+                       class="btn btn-outline-danger btn-sm">
+                        Remove
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center">
+                <h4>Your wishlist is empty!</h4>
+                <p>Start adding vinyl records you want to collect.</p>
+                <a href="{% url 'wishlist_create' %}" class="btn btn-primary">
+                    Add Your First Wishlist Item
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

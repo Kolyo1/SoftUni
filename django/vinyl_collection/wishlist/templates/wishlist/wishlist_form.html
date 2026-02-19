@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.artist.id_for_label }}" class="form-label">
+                                    {{ form.artist.label }}
+                                </label>
+                                {{ form.artist }}
+                                {% if form.artist.help_text %}
+                                <small class="text-muted">{{ form.artist.help_text }}</small>
+                                {% endif %}
+                                {% if form.artist.errors %}
+                                <div class="text-danger">
+                                    {{ form.artist.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.temporary_artist.id_for_label }}" class="form-label">
+                                    {{ form.temporary_artist.label }}
+                                </label>
+                                {{ form.temporary_artist }}
+                                {% if form.temporary_artist.help_text %}
+                                <small class="text-muted">{{ form.temporary_artist.help_text }}</small>
+                                {% endif %}
+                                {% if form.temporary_artist.errors %}
+                                <div class="text-danger">
+                                    {{ form.temporary_artist.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.album_title.id_for_label }}" class="form-label">
+                            {{ form.album_title.label }} *
+                        </label>
+                        {{ form.album_title }}
+                        {% if form.album_title.help_text %}
+                        <small class="text-muted">{{ form.album_title.help_text }}</small>
+                        {% endif %}
+                        {% if form.album_title.errors %}
+                        <div class="text-danger">
+                            {{ form.album_title.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.priority.id_for_label }}" class="form-label">
+                                    {{ form.priority.label }}
+                                </label>
+                                {{ form.priority }}
+                                {% if form.priority.help_text %}
+                                <small class="text-muted">{{ form.priority.help_text }}</small>
+                                {% endif %}
+                                {% if form.priority.errors %}
+                                <div class="text-danger">
+                                    {{ form.priority.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.max_price.id_for_label }}" class="form-label">
+                                    {{ form.max_price.label }}
+                                </label>
+                                {{ form.max_price }}
+                                {% if form.max_price.help_text %}
+                                <small class="text-muted">{{ form.max_price.help_text }}</small>
+                                {% endif %}
+                                {% if form.max_price.errors %}
+                                <div class="text-danger">
+                                    {{ form.max_price.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">
+                            {{ form.notes.label }}
+                        </label>
+                        {{ form.notes }}
+                        {% if form.notes.help_text %}
+                        <small class="text-muted">{{ form.notes.help_text }}</small>
+                        {% endif %}
+                        {% if form.notes.errors %}
+                        <div class="text-danger">
+                            {{ form.notes.errors }}
+                                </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-check">
+                        {{ form.is_available }}
+                        <label class="form-check-label" for="{{ form.is_available.id_for_label }}">
+                            {{ form.is_available.label }}
+                        </label>
+                        {% if form.is_available.help_text %}
+                        <small class="text-muted">{{ form.is_available.help_text }}</small>
+                        {% endif %}
+                        {% if form.is_available.errors %}
+                        <div class="text-danger">
+                            {{ form.is_available.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if form.non_field_errors %}
+                    <div class="message error">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'wishlist_list' %}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            {{ title }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

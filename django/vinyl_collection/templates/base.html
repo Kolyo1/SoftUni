@@ -5,96 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Vinyl Collection Manager{% endblock %}</title>
     
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'album_list' %}">
-                🎵 Vinyl Collector
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'album_list' %}active{% endif %}" 
-                           href="{% url 'album_list' %}">Collection</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/artists/">Artists</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Wishlist</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-outline-light btn-sm" 
-                           href="{% url 'album_create' %}">+ Add Album</a>
-                    </li>
-                </ul>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <h1><a href="{% url 'album_list' %}">Vinyl Collector</a></h1>
+                <p class="tagline">Your personal record library</p>
             </div>
+            
+            <nav class="main-nav">
+                <div class="nav-row">
+                    <a class="{% if request.resolver_match.url_name == 'album_list' %}active{% endif %}" 
+                       href="{% url 'album_list' %}">Collection</a>
+                    <a href="/artists/">Artists</a>
+                    <a class="{% if request.resolver_match.url_name == 'wishlist_list' %}active{% endif %}" 
+                       href="{% url 'wishlist_list' %}">Wishlist</a>
+                </div>
+                <div class="nav-row">
+                    <a class="btn" href="{% url 'album_create' %}">Add Album</a>
+                    <a class="btn btn-outline-primary" href="{% url 'wishlist_create' %}">Add to Wishlist</a>
+                </div>
+            </nav>
         </div>
-    </nav>
+    </header>
 
     <!-- Messages -->
     {% if messages %}
-    <div class="container mt-3">
+    <div class="messages">
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <div class="message {{ message.tags }}">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         {% endfor %}
     </div>
     {% endif %}
 
     <!-- Main Content -->
-    <main class="container my-4">
+    <main class="main-content">
         {% block content %}
         {% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white mt-5 py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>Vinyl Collection Manager</h5>
-                    <p>Keep track of your precious vinyl records</p>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-row">
+                <div class="footer-col">
+                    <h5>Vinyl Collector</h5>
+                    <p>Your personal record library management system</p>
+                    <div class="footer-stats">
+                        {% load vinyl_filters %}
+                        <span class="stat-item">{{ total_albums }} Albums</span>
+                        <span class="stat-item">{{ total_artists }} Artists</span>
+                    </div>
                 </div>
-                <div class="col-md-3">
+                
+                <div class="footer-col">
                     <h6>Quick Links</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'album_list' %}" class="text-white-50">Collection</a></li>
-                        <li><a href="/artists/" class="text-white-50">Artists</a></li>
-                        <li><a href="{% url 'album_create' %}" class="btn btn-primary">Add Your First Album</a></li>
+                    <ul>
+                        <li><a href="{% url 'album_list' %}">Browse Collection</a></li>
+                        <li><a href="/artists/">View Artists</a></li>
+                        <li><a href="{% url 'wishlist_list' %}">My Wishlist</a></li>
+                        <li><a href="{% url 'album_create' %}">Add New Album</a></li>
                     </ul>
                 </div>
-                <div class="col-md-3">
-                    <h6>Stats</h6>
-                    <ul class="list-unstyled text-white-50">
-                        {% load vinyl_filters %}
-                        <li>Total Albums: {% total_albums %}</li>
-                        <li>Total Artists: {% total_artists %}</li>
+                
+                <div class="footer-col">
+                    <h6>Collection Stats</h6>
+                    <ul>
+                        <li><a href="{% url 'album_list' %}">All Albums</a></li>
+                        <li><a href="{% url 'wishlist_list' %}">Wishlist Items</a></li>
+                        <li><a href="/artists/">Artist Directory</a></li>
                     </ul>
                 </div>
             </div>
-            <hr class="bg-light">
-            <div class="text-center">
-                <small>&copy; 2026 Vinyl Collection Manager. All rights reserved.</small>
+            
+            <div class="footer-bottom">
+                <div class="footer-links">
+                    <a href="{% url 'album_list' %}">Home</a>
+                    <span class="separator">•</span>
+                    <a href="{% url 'wishlist_list' %}">Wishlist</a>
+                    <span class="separator">•</span>
+                    <a href="{% url 'album_create' %}">Add Album</a>
+                </div>
+                <div class="copyright">
+                    <small>Made with love for vinyl enthusiasts</small>
+                </div>
             </div>
         </div>
     </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

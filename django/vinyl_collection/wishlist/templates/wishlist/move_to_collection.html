@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Add to Collection{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>Add to Collection</h4>
+            </div>
+            <div class="card-body">
+                <div class="message success">
+                    <h5>Great choice!</h5>
+                    <p>You're about to add this vinyl to your collection:</p>
+                    <hr>
+                    <h6>{{ wishlist_item.album_title }}</h6>
+                    <p class="mb-2">
+                        <strong>Artist:</strong> 
+                        {% if wishlist_item.artist %}
+                            {{ wishlist_item.artist.name }}
+                        {% else %}
+                            {{ wishlist_item.temporary_artist }}
+                        {% endif %}
+                    </p>
+                    {% if wishlist_item.max_price %}
+                    <p class="mb-2">
+                        <strong>Max Price:</strong> ${{ wishlist_item.max_price }}
+                    </p>
+                    {% endif %}
+                    <p class="mb-0">
+                        <strong>Priority:</strong> {{ wishlist_item.get_priority_display }}
+                    </p>
+                </div>
+                
+                <div class="message info">
+                    <h6>What happens next:</h6>
+                    <ul class="mb-0">
+                        <li>A new album will be created in your collection</li>
+                        <li>This item will be removed from your wishlist</li>
+                        <li>If using a temporary artist name, a new artist will be created</li>
+                        <li>You can edit the album details later (release year, condition, tracks, etc.)</li>
+                    </ul>
+                </div>
+                
+                {% if not wishlist_item.artist %}
+                <div class="message info">
+                    <strong>Note:</strong> This will create a new artist named "{{ wishlist_item.temporary_artist }}" 
+                    since no existing artist was selected.
+                </div>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'wishlist_list' %}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            Add to Collection
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

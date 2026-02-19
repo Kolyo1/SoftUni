@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Remove from Wishlist{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>Remove from Wishlist</h4>
+            </div>
+            <div class="card-body">
+                <div class="message warning">
+                    <h5>Are you sure?</h5>
+                    <p>You're about to remove this item from your wishlist:</p>
+                    <hr>
+                    <h6>{{ wishlist_item.album_title }}</h6>
+                    <p class="mb-2">
+                        <strong>Artist:</strong> 
+                        {% if wishlist_item.artist %}
+                            {{ wishlist_item.artist.name }}
+                        {% else %}
+                            {{ wishlist_item.temporary_artist }}
+                        {% endif %}
+                    </p>
+                    {% if wishlist_item.max_price %}
+                    <p class="mb-2">
+                        <strong>Max Price:</strong> ${{ wishlist_item.max_price }}
+                    </p>
+                    {% endif %}
+                    <p class="mb-0">
+                        <strong>Priority:</strong> {{ wishlist_item.get_priority_display }}
+                    </p>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'wishlist_list' %}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            Remove from Wishlist
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
