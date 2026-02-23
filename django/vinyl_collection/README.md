@@ -4,14 +4,14 @@ A Django-based web application for managing your personal vinyl record collectio
 
 ## Features
 
-### 🎵 Collection Management
+### Collection Management
 - **Album Catalog**: Add, edit, delete, and view your vinyl collection
 - **Artist Directory**: Manage artist information and view their discography
 - **Genre System**: Categorize albums by musical genres
 - **Album Details**: Track release year, condition, speed, catalog numbers, and personal notes
 - **Search & Filter**: Find albums quickly with built-in filtering options
 
-### 📝 Wishlist System
+### Wishlist System
 - **Wishlist Management**: Keep track of albums you want to acquire
 - **Priority Levels**: Set urgency levels (Low, Medium, High, Urgent)
 - **Availability Tracking**: Mark when items become available for purchase
@@ -19,14 +19,14 @@ A Django-based web application for managing your personal vinyl record collectio
 - **Quick Actions**: Move wishlist items directly to your collection
 - **Temporary Artists**: Add items for artists not yet in your database
 
-### 🎨 Modern UI/UX
+### odern UI/UX
 - **Clean Design**: Modern, casual interface with glass morphism effects
 - **Responsive Layout**: Works perfectly on desktop, tablet, and mobile devices
 - **Smooth Interactions**: Hover effects, transitions, and micro-animations
 - **No Emojis**: Clean, professional-looking interface without emoji decorations
 - **Custom CSS**: Fully custom styling without Bootstrap dependencies
 
-### 📊 Statistics & Organization
+### Statistics & Organization
 - **Collection Stats**: View total albums and artists in your collection
 - **Wishlist Overview**: Track items you're looking for
 - **Priority Management**: Focus on most wanted items first
