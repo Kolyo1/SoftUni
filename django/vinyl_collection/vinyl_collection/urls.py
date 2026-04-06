@@ -9,7 +9,10 @@ handler404 = custom_404
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('records.urls')),
+    path('api/', include('api.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+    path('', include('users.urls')),
+    path('albums/', include('records.urls')),
     path('artists/', include('artists.urls')),
     path('wishlist/', include('wishlist.urls')),
 ]

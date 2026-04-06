@@ -1,6 +1,7 @@
 # wishlist/models.py
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import User
 from artists.models import Artist
 
 class WishlistItem(models.Model):
@@ -36,6 +37,13 @@ class WishlistItem(models.Model):
     notes = models.TextField(blank=True)
     created_date = models.DateField(auto_now_add=True)
     is_available = models.BooleanField(default=False)
+    
+    # Ownership
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Owner"
+    )
     
     class Meta:
         ordering = ['-priority', 'album_title']

@@ -1,6 +1,7 @@
 # records/models.py
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User
 from artists.models import Artist, Genre
 
 class Album(models.Model):
@@ -61,6 +62,13 @@ class Album(models.Model):
     notes = models.TextField(
         blank=True,
         verbose_name="Personal Notes"
+    )
+    
+    # Ownership
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Owner"
     )
     
     # Auto fields
