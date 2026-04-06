@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - Vinyl Collection{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Hero Section -->
+    <div class="jumbotron bg-light p-5 rounded-3 mb-4">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">Welcome to Vinyl Collection</h1>
+            <p class="col-md-8 fs-4">Manage your personal vinyl record collection, track your wishlist, and discover new music.</p>
+            {% if user.is_authenticated %}
+                <a class="btn btn-primary btn-lg" href="{% url 'album_list' %}" role="button">View Collection</a>
+                <a class="btn btn-outline-primary btn-lg" href="{% url 'profile_detail' %}" role="button">My Profile</a>
+            {% else %}
+                <a class="btn btn-primary btn-lg" href="{% url 'register' %}" role="button">Get Started</a>
+                <a class="btn btn-outline-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Albums</h5>
+                    <h2 class="text-primary">{{ total_albums }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Reviews</h5>
+                    <h2 class="text-success">{{ total_reviews }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Users</h5>
+                    <h2 class="text-info">{{ total_users }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest Albums -->
+    {% if latest_albums %}
+    <div class="row">
+        <div class="col-12">
+            <h3>Latest Albums</h3>
+            <div class="row">
+                {% for album in latest_albums %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ album.title }}</h5>
+                            <p class="card-text">
+                                <strong>Artist:</strong> {{ album.artist.name }}<br>
+                                <strong>Year:</strong> {{ album.release_year }}<br>
+                                <strong>Condition:</strong> {{ album.get_condition_display }}
+                            </p>
+                            <a href="{% url 'album_detail' album.pk %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

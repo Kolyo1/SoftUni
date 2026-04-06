@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile - Vinyl Collection{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Profile Information -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Profile Information</h4>
+                </div>
+                <div class="card-body text-center">
+                    {% if profile.profile_photo %}
+                        <img src="{{ profile.profile_photo.url }}" alt="Profile Photo" class="rounded-circle mb-3" style="max-width: 150px;">
+                    {% else %}
+                        <div class="bg-secondary rounded-circle mb-3 d-inline-block" style="width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user fa-3x text-white"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <h5>{{ profile.get_full_name }}</h5>
+                    <p class="text-muted">@{{ profile.user.username }}</p>
+                    
+                    {% if profile.bio %}
+                        <p>{{ profile.bio }}</p>
+                    {% endif %}
+                    
+                    {% if profile.location %}
+                        <p><i class="fas fa-map-marker-alt"></i> {{ profile.location }}</p>
+                    {% endif %}
+                    
+                    {% if profile.website %}
+                        <p><a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a></p>
+                    {% endif %}
+                    
+                    <a href="{% url 'profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Content -->
+        <div class="col-md-8">
+            <!-- Statistics -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">My Albums</h5>
+                            <h2 class="text-primary">{{ user_albums.count }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">My Reviews</h5>
+                            <h2 class="text-success">{{ user_reviews.count }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Reviews -->
+            {% if user_reviews %}
+            <div class="card">
+                <div class="card-header">
+                    <h5>My Recent Reviews</h5>
+                </div>
+                <div class="card-body">
+                    {% for review in user_reviews %}
+                    <div class="border-bottom pb-3 mb-3">
+                        <h6>{{ review.album.title }} - {{ review.album.artist.name }}</h6>
+                        <div class="text-warning">
+                            {% for i in review.rating %}★{% endfor %}
+                            {% for i in review.empty_stars %}☆{% endfor %}
+                        </div>
+                        <p class="mb-1">{{ review.title }}</p>
+                        <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Recent Albums -->
+            {% if user_albums %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5>My Albums</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for album in user_albums %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6>{{ album.title }}</h6>
+                                    <p class="mb-1">{{ album.artist.name }} ({{ album.release_year }})</p>
+                                    <small class="text-muted">{{ album.get_condition_display }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

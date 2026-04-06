@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Artist - Vinyl Collection{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{% if form.instance.pk %}Edit Artist{% else %}Add New Artist{% endif %}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">Artist/Band Name *</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger">{{ form.name.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">{{ form.name.help_text }}</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.formation_type.id_for_label }}" class="form-label">Type</label>
+                                {{ form.formation_type }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.formed_year.id_for_label }}" class="form-label">Year Formed</label>
+                                {{ form.formed_year }}
+                                {% if form.formed_year.errors %}
+                                    <div class="text-danger">{{ form.formed_year.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.country.id_for_label }}" class="form-label">Country of Origin</label>
+                            {{ form.country }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.biography.id_for_label }}" class="form-label">Biography</label>
+                            {{ form.biography }}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'artist_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Update Artist{% else %}Add Artist{% endif %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

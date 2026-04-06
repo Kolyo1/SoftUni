@@ -11,7 +11,6 @@ from reviews.models import Review
 
 
 class HomeView(TemplateView):
-    """Dashboard/home view"""
     template_name = 'home.html'
 
     def get_context_data(self, **kwargs):
@@ -19,27 +18,23 @@ class HomeView(TemplateView):
         context['total_albums'] = Album.objects.count()
         context['total_reviews'] = Review.objects.count()
         context['total_users'] = User.objects.count()
-        # Show latest albums
         context['latest_albums'] = Album.objects.select_related('artist').prefetch_related('genre')[:5]
         return context
 
 
 class RegisterView(CreateView):
-    """User registration view"""
     form_class = UserRegistrationForm
     template_name = 'users/register.html'
     success_url = reverse_lazy('login')
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        # Create profile for new user
         Profile.objects.create(user=self.object)
         messages.success(self.request, 'Registration successful! Please log in.')
         return response
 
 
 class ProfileDetailView(LoginRequiredMixin, DetailView):
-    """View user profile"""
     model = Profile
     template_name = 'users/profile_detail.html'
     context_object_name = 'profile'
@@ -50,13 +45,12 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context['user_albums'] = Album.objects.filter(artist__isnull=False)[:10]  # Can be refined
+        context['user_albums'] = Album.objects.filter(owner=user)[:10]
         context['user_reviews'] = Review.objects.filter(author=user)
         return context
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-    """Edit user profile"""
     model = Profile
     form_class = ProfileForm
     template_name = 'users/profile_form.html'
@@ -66,7 +60,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         return self.request.user.profile
 
     def form_valid(self, form):
-        # Update user fields
         user = self.request.user
         user.first_name = form.cleaned_data.get('first_name', '')
         user.last_name = form.cleaned_data.get('last_name', '')

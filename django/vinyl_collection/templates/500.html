@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Server Error - Vinyl Collection{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Something went wrong
+                    </h3>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-server fa-4x text-warning"></i>
+                    </div>
+                    
+                    <h4 class="mb-3">We're experiencing technical difficulties</h4>
+                    
+                    <p class="text-muted mb-4">
+                        Our team has been notified and is working to fix this issue. 
+                        Please try again in a few minutes.
+                    </p>
+                    
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{% url 'home' %}" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Go Home
+                        </a>
+                        <button onclick="history.back()" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Go Back
+                        </button>
+                    </div>
+                </div>
+                <div class="card-footer text-center text-muted">
+                    <small>Error Code: 500 - Internal Server Error</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

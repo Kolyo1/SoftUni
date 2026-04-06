@@ -1,15 +1,14 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
 
 
 class UserRegistrationForm(UserCreationForm):
-    """Form for user registration"""
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter your email'
+            'placeholder': 'Email address'
         })
     )
     first_name = forms.CharField(
@@ -17,15 +16,15 @@ class UserRegistrationForm(UserCreationForm):
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'First Name'
+            'placeholder': 'First name'
         })
     )
     last_name = forms.CharField(
-        max_length=150,
+        max_length=30,
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Last Name'
+            'placeholder': 'Last name'
         })
     )
 
@@ -47,38 +46,37 @@ class UserRegistrationForm(UserCreationForm):
         })
         self.fields['password2'].widget = forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Confirm Password'
+            'placeholder': 'Confirm password'
         })
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("This email is already registered!")
+            raise forms.ValidationError("This email is already registered")
         return email
 
 
 class ProfileForm(forms.ModelForm):
-    """Form for editing user profile"""
     first_name = forms.CharField(
         max_length=30,
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'First Name'
+            'placeholder': 'First name'
         })
     )
     last_name = forms.CharField(
-        max_length=150,
+        max_length=30,
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Last Name'
+            'placeholder': 'Last name'
         })
     )
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Email'
+            'placeholder': 'Email address'
         })
     )
 
@@ -89,7 +87,7 @@ class ProfileForm(forms.ModelForm):
             'bio': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 4,
-                'placeholder': 'Tell us about yourself...'
+                'placeholder': 'Tell us about yourself'
             }),
             'profile_photo': forms.FileInput(attrs={
                 'class': 'form-control'
